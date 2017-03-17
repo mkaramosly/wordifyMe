@@ -18,6 +18,4 @@ $app->get('/parse/[{id}]', function ($request, $response, $args) {
     return error_log('PARSING'.PHP_EOL, 3, '/tmp/err.log');
 });
 
-$app->get('/analyze/[{id}]', function ($request, $response, $args) {
-    return error_log('ANALYZING'.PHP_EOL, 3, '/tmp/err.log');
-});
+$app->get('/analyze/[{id}]', '\App\Controller\Analyzer:analyze');
