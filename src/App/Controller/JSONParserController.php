@@ -7,7 +7,7 @@ class JSONParserController {
 
   public $watsonResults;
 
-  public function parseJSONFile() {
+  public function parseJSONFile($id) {
 
     $contents = file_get_contents("../examples/sample_data.txt");
     $jsonObjects = $this->splitIntoJSONObjects($contents);
