@@ -19,5 +19,7 @@ $app->get('/parse/[{id}]', function ($request, $response, $args) {
 });
 
 $app->get('/analyze/[{id}]', function ($request, $response, $args) {
-    return error_log('ANALYZING'.PHP_EOL, 3, '/tmp/err.log');
+//    error_log("HERE".PHP_EOL, 3, '/tmp/err.log');
+//    error_log(print_r($this->db, true).PHP_EOL, 3, '/tmp/err.log');
+    return $this->Analyzer->analyze($args, []);
 });
