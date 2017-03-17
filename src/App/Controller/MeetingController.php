@@ -114,8 +114,6 @@ class MeetingController extends Controller
 
             $http = new HttpClient(true);
 
-//            var_dump($config);
-
 //            shell_exec("ls $args");
 
             $wstt = new WatsonSpeechToTextApi($config);
@@ -123,11 +121,8 @@ class MeetingController extends Controller
                 'file' => '@' . realpath("../data/{$meetingId}/{$meetingId}.flac") //$extensionMap[$_FILES['upfile']['type']])
             );
 
-            echo '<br><pre>';
-
-            echo '</pre>';
             /**
-             * curl -X POST -u f0855686-4dbc-49a6-a0ec-3e40c7472c9b:pOOktT2JE3by
+             * curl -X POST -u username:password
              * --header "Content-Type: audio/flac"
              * --header "Transfer-Encoding: chunked"
              * --data-binary @/home/mehdi/audio-file.flac
@@ -150,11 +145,12 @@ class MeetingController extends Controller
 //		var_dump($ex);
 //	}
 //            . $extensionMap[$_FILES['upfile']['type']])
-            echo 'curl -X POST -u ' . $config['watson']['username'] . ':' . $config['watson']['password'] . ' --header "Content-Type: audio/flac" --header "Transfer-Encoding: chunked" --data-binary @' . realpath("../data/{$meetingId}/{$meetingId}.flac") . ' "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?continuous=true&interim_results=true&timestamps=true&word_alternatives_threshold=0.1&smart_formatting=true" > ../data/' . $meetingId . '/' . $meetingId . '_response.json ';
-            exec('curl -X POST -u ' . $config['watson']['username'] . ':' . $config['watson']['password'] . ' --header "Content-Type: audio/flac" --header "Transfer-Encoding: chunked" --data-binary @' . realpath("../data/{$meetingId}/{$meetingId}.flac") . ' "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?continuous=true&interim_results=true&timestamps=true&word_alternatives_threshold=0.1&smart_formatting=true" > ../data/' . $meetingId . '/' . $meetingId . '_response.json ');
-        } catch (RuntimeException $e) {
 
+            exec('curl -X POST -u ' . $config['watson']['username'] . ':' . $config['watson']['password'] . ' --header "Content-Type: audio/flac" --header "Transfer-Encoding: chunked" --data-binary @' . realpath("../data/{$meetingId}/{$meetingId}.flac") . ' "https://stream.watsonplatform.net/speech-to-text/api/v1/recognize?continuous=true&interim_results=true&timestamps=true&word_alternatives_threshold=0.1&smart_formatting=true" > ../data/' . $meetingId . '/' . $meetingId . '.json ');
+            echo '{result : success}';
+        } catch (Exception $e) {
             echo $e->getMessage();
+            echo '{result : failed, errorMessage: ' . $e->getMessage() . '}';
         }
     }
 }
