@@ -23,9 +23,7 @@ class JSONParserController {
       return false;
     }
 
-    $contents = file_get_contents("../examples/sample_data.txt");
     $jsonObjects = $this->splitIntoJSONObjects($contents);
-
     $this->watsonResults = new WatsonResults();
 
     foreach ($jsonObjects as $jsonObject) {
