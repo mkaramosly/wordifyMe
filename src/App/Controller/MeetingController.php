@@ -11,8 +11,12 @@ class MeetingController extends Controller
         parent::__construct($view);
     }
 
-    public function get($request, $response, $args) {
-        return $this->view->render($response, 'meeting.phtml', $args);
+    public function get($request, $response, $args)
+    {
+        $wordsObj = new \App\Model\Words();
+        $words = $wordsObj->getWords($args['id']);
+
+        return $this->view->render($response, 'meeting.phtml', ['words' => $words]);
     }
 
     public function post($request, $response, $args) {
