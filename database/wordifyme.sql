@@ -1,130 +1,118 @@
--- phpMyAdmin SQL Dump
--- version 4.5.2
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Mar 17, 2017 at 01:40 AM
--- Server version: 10.1.19-MariaDB
--- PHP Version: 5.6.28
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4541
+#
+# http://www.sequelpro.com/
+# https://github.com/sequelpro/sequelpro
+#
+# Host: 0.0.0.0 (MySQL 5.7.17)
+# Database: woridyme
+# Generation Time: 2017-03-17 06:01:26 +0000
+# ************************************************************
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Database: `wordifyme`
---
 
--- --------------------------------------------------------
+# Dump of table files
+# ------------------------------------------------------------
 
---
--- Table structure for table `Files`
---
+DROP TABLE IF EXISTS `files`;
 
-CREATE TABLE `Files` (
-  `fileId` int(10) NOT NULL,
-  `path` varchar(50) NOT NULL,
-  `filename` varchar(50) NOT NULL,
-  `uploadedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+CREATE TABLE `files` (
+  `fileId` int(10) NOT NULL AUTO_INCREMENT,
+  `path` varchar(50) COLLATE utf8_bin NOT NULL,
+  `filename` varchar(50) COLLATE utf8_bin NOT NULL,
+  `uploadedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`fileId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `Meeting`
---
 
-CREATE TABLE `Meeting` (
-  `meetingId` int(10) NOT NULL,
+# Dump of table meeting
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `meeting`;
+
+CREATE TABLE `meeting` (
+  `meetingId` int(10) NOT NULL AUTO_INCREMENT,
   `projectId` int(10) NOT NULL,
   `fileId` int(10) NOT NULL,
-  `title` varchar(100) NOT NULL,
+  `title` varchar(100) COLLATE utf8_bin NOT NULL,
   `startTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `endTimestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `transcriptId` int(10) NOT NULL,
-  `transcribed` enum('0','1','2') NOT NULL DEFAULT '0',
-  `parsed` enum('0','1','2') NOT NULL DEFAULT '0',
-  `analyzed` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `transcribed` enum('0','1','2') COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `parsed` enum('0','1','2') COLLATE utf8_bin NOT NULL DEFAULT '0',
+  `analyzed` enum('0','1','2') COLLATE utf8_bin NOT NULL DEFAULT '0',
+  PRIMARY KEY (`meetingId`),
+  KEY `fk_fileId` (`fileId`),
+  KEY `transcriptId` (`transcriptId`),
+  CONSTRAINT `fk_fileId` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`),
+  CONSTRAINT `meeting_ibfk_1` FOREIGN KEY (`transcriptId`) REFERENCES `transcript` (`transcriptId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `Meeting_Words_Pid`
---
 
-CREATE TABLE `Meeting_Words_Pid` (
-  `meetingWordId` int(10) NOT NULL,
+# Dump of table meeting_words
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `meeting_words`;
+
+CREATE TABLE `meeting_words` (
+  `meetingWordId` int(10) NOT NULL AUTO_INCREMENT,
   `meetingId` int(10) NOT NULL,
-  `word` varchar(100) NOT NULL,
+  `word` varchar(100) COLLATE utf8_bin NOT NULL,
   `startTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `endTimestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `confidence` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `confidence` float NOT NULL,
+  PRIMARY KEY (`meetingWordId`),
+  KEY `fk_meetingId` (`meetingId`),
+  CONSTRAINT `fk_meetingId` FOREIGN KEY (`meetingId`) REFERENCES `meeting` (`meetingId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- --------------------------------------------------------
 
---
--- Table structure for table `Transcript`
---
 
-CREATE TABLE `Transcript` (
-  `transcriptId` int(10) NOT NULL,
-  `transcript` text NOT NULL,
-  `confidence` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+# Dump of table transcript
+# ------------------------------------------------------------
 
--- --------------------------------------------------------
+DROP TABLE IF EXISTS `transcript`;
 
---
--- Table structure for table `word_alternative_pid`
---
+CREATE TABLE `transcript` (
+  `transcriptId` int(10) NOT NULL AUTO_INCREMENT,
+  `transcript` text COLLATE utf8_bin NOT NULL,
+  `confidence` float NOT NULL,
+  PRIMARY KEY (`transcriptId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-CREATE TABLE `word_alternative_pid` (
-  `wordAlternativeId` int(10) NOT NULL,
+
+
+# Dump of table word_alternative
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `word_alternative`;
+
+CREATE TABLE `word_alternative` (
+  `wordAlternativeId` int(10) NOT NULL AUTO_INCREMENT,
   `meetingWordId` int(10) NOT NULL,
-  `confidence` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `confidence` float NOT NULL,
+  PRIMARY KEY (`wordAlternativeId`),
+  KEY `fk_meetingWordId` (`meetingWordId`),
+  CONSTRAINT `fk_meetingWordId` FOREIGN KEY (`meetingWordId`) REFERENCES `meeting_words` (`meetingWordId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Indexes for dumped tables
---
 
---
--- Indexes for table `Files`
---
-ALTER TABLE `Files`
-  ADD PRIMARY KEY (`fileId`);
 
---
--- Indexes for table `Meeting`
---
-ALTER TABLE `Meeting`
-  ADD PRIMARY KEY (`meetingId`);
 
---
--- Indexes for table `Meeting_Words_Pid`
---
-ALTER TABLE `Meeting_Words_Pid`
-  ADD PRIMARY KEY (`meetingWordId`);
-
---
--- Indexes for table `Transcript`
---
-ALTER TABLE `Transcript`
-  ADD PRIMARY KEY (`transcriptId`);
-
---
--- Indexes for table `word_alternative_pid`
---
-ALTER TABLE `word_alternative_pid`
-  ADD PRIMARY KEY (`wordAlternativeId`);
-
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
