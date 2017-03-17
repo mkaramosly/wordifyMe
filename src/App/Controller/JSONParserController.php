@@ -11,6 +11,7 @@ class JSONParserController {
   public $dbName = "hackathon";
   public $username = 'root';
   public $password = '';
+  public $currentFolder;
 
   public function parseJSONFile($request, $args) {
 
@@ -21,6 +22,7 @@ class JSONParserController {
 
     foreach ($files as $dir) {
       if (preg_match('/(1)+_/', $dir)) {
+        $this->currentFolder = $dir;
         $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response_file.json');
       }
     }
@@ -84,10 +86,8 @@ class JSONParserController {
       $word->insertWord($this->watsonResults->meetingId, $conn);
     }
 
-    $file = ''.$this->watsonResults->meetingId;
-    $handle = fopen($file, 'wr');
-
-
+    $file = '../data/'.$this->currentFolder . '/' . $this->watsonResults->meetingId;
+    file_put_contents($file, '');
 
   }
 
