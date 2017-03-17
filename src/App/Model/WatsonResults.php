@@ -7,6 +7,7 @@ class WatsonResults
   public $words = array();
   public $transcript;
   public $confidence;
+  public $meetingId;
 
   public function parseTimeStamps($timestamps) {
     $index = 0;

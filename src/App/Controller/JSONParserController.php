@@ -8,8 +8,9 @@ class JSONParserController {
   public $watsonResults;
   public $path = "../data";
   public $servername = "localhost";
+  public $dbName = "hackathon";
   public $username = 'root';
-  public $password = 'test123';
+  public $password = '';
 
   public function parseJSONFile($request, $args) {
 
@@ -20,7 +21,7 @@ class JSONParserController {
 
     foreach ($files as $dir) {
       if (preg_match('/(1)+_/', $dir)) {
-        $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response.txt');
+        $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response_file.json');
       }
     }
 
@@ -30,6 +31,7 @@ class JSONParserController {
 
     $jsonObjects = $this->splitIntoJSONObjects($contents);
     $this->watsonResults = new WatsonResults();
+    $this->watsonResults->meetingId = $id;
 
     foreach ($jsonObjects as $jsonObject) {
       $timestamps = $jsonObject['results'][0]['alternatives'][0]['timestamps'];
@@ -71,10 +73,19 @@ class JSONParserController {
 
   public function writeToDB() {
     try {
-      $conn = new \PDO("mysql:host=$this->servername;dbname=wordifyme", $this->username, $this->password);
+      $conn = new \PDO("mysql:host=$this->servername;dbname=$this->dbName", $this->username, $this->password);
       $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     } catch (\Exception $e) {
+      echo $e->getMessage();
+      return;
     }
+
+    foreach ($this->watsonResults->words as $word) {
+      $word->insertWord($this->watsonResults->meetingId, $conn);
+    }
+
+    $file = ''.$this->watsonResults->meetingId;
+    $handle = fopen($file, 'wr');
 
 
 

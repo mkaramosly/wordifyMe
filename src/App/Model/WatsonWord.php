@@ -24,14 +24,14 @@ class WatsonWord
     $this->confidence = $confidence;
   }
 
-  function insertWord( $meetingId) {
-    $query = "INSERT INTO `wordifyMe`.`meeting_words` (`meeting_word_id`,`meetingId`, `word`,
-      `startTimestamp`, `endTimestamp`, `confidence`) VALUES (
-      NULL, `$meetingId`, `$this->text`, `$this->startTime`, `$this->endTime`,`$this->confidence`
-      )";
-
-    foreach ($this->alternatives as $alternative) {
-      $alternative->insertWord($meetingId);
+  function insertWord($meetingId, $conn) {
+    $sql = "INSERT INTO hackathon.meeting_words (meetingWordId,meetingId,word,startTimestamp,endTimestamp,confidence) VALUES (:meetingWordId,:meetingId,:word,:startTimestamp,:endTimestamp,:confidence)";
+    //$query = "INSERT INTO hackathon.meeting_words (meetingWordId,meetingId,word,startTimestamp,endTimestamp,confidence) VALUES (NULL,1, 'test', NULL, NULL, 1)";
+    $query = $conn->prepare($sql);
+    try {
+      $query->execute(array(':meetingWordId' => NULL, ':meetingId' => $meetingId, ':word' => $this->text, ':startTimestamp' => $this->startTime, ':endTimestamp' => $this->endTime, ':confidence' => $this->confidence));
+    } catch (\Exception $e) {
+      echo $e->getMessage();
     }
   }
 
