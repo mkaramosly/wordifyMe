@@ -10,8 +10,10 @@ class Analyzer
 
     }
 
-    public function analyze($request, $response, $args)
+    public function analyze($args)
     {
+        error_log(print_r($args, true), 3, '/tmp/err.log');
+        error_log("HERE".PHP_EOL, 3, '/tmp/err.log');
         $client = new Client([
             // Base URI is used with relative requests
             'base_uri' => 'https://gateway.watsonplatform.net',
@@ -53,7 +55,8 @@ class Analyzer
         );
         $response = $response->getBody()->getContents();
 
-        error_log(print_r($response, true).PHP_EOL, 3, '/tmp/err.log');
+        $analyzerModel = new \App\Model\Analyzer();
+        $analyzerModel->storeKeyword($response, $args['id']);
 
         return $response;
     }

@@ -15,5 +15,12 @@ return [
             'path' => __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+
+        'db' => [
+            'host' => "mysql",
+            'user' => "root",
+            'pass' => "test123",
+            'dbname' => 'wordifyme'
+        ]
     ],
 ];
