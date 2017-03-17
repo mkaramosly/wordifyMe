@@ -12,7 +12,6 @@ class Analyzer
 
     public function analyze($args)
     {
-        error_log(print_r($args, true), 3, '/tmp/err.log');
         $client = new Client([
             // Base URI is used with relative requests
             'base_uri' => 'https://gateway.watsonplatform.net',
@@ -20,8 +19,11 @@ class Analyzer
             'timeout'  => 2.0,
         ]);
 
+        $analyzerModel = new \App\Model\Analyzer();
+
+        $transcript = $analyzerModel->getTranscript($args['id']);
         $body = [
-            "text" => "IBM is an American multinational technology company headquartered in Armonk, New York, United States, with operations in over 170 countries.",
+            "text" => $transcript[0],
             "features" => [
                 "entities" => [
                     "emotion" => true,
@@ -53,8 +55,6 @@ class Analyzer
             ]
         );
         $response = $response->getBody()->getContents();
-
-        $analyzerModel = new \App\Model\Analyzer();
         $analyzerModel->storeKeyword($response, $args['id']);
 
         return $response;

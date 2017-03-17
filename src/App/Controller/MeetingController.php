@@ -11,6 +11,9 @@ class MeetingController extends Controller
 
     public function get($request, $response, $args)
     {
+        $wordsObj = new \App\Model\Words();
+        $words = $wordsObj->getWords($args['id']);
+
         return $this->view->render($response, 'meeting.phtml', $args);
     }
 }

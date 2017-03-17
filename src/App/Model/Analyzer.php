@@ -18,6 +18,20 @@ class Analyzer
         $this->db = $pdo;
     }
 
+    public function getTranscript($meetingId)
+    {
+        $sql = "SELECT transcript FROM transcript t JOIN meeting m ON m.transcriptId = m.meetingId WHERE m.meetingId = $meetingId;";
+        try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+
+            return $stmt->fetch(\PDO::FETCH_NUM);
+        } catch (\PDOException $e) {
+            error_log(print_r($e->getMessage(), true), 3, '/tmp/err.log');
+            return false;
+        }
+    }
+
     public function storeKeyword($keywords, $meetingId)
     {
         $keywords = json_decode($keywords);
