@@ -25,7 +25,8 @@ class WatsonWord
   }
 
   function insertWord($meetingId, $conn) {
-    $sql = "INSERT INTO hackathon.meeting_words (meetingWordId,meetingId,word,startTimestamp,endTimestamp,confidence) VALUES (:meetingWordId,:meetingId,:word,:startTimestamp,:endTimestamp,:confidence)";
+    error_log("HERE".PHP_EOL, 3, '/tmp/err.log');
+    $sql = "INSERT INTO wordifyme.meeting_words (meetingWordId,meetingId,word,startTimestamp,endTimestamp,confidence) VALUES (:meetingWordId,:meetingId,:word,:startTimestamp,:endTimestamp,:confidence)";
     //$query = "INSERT INTO hackathon.meeting_words (meetingWordId,meetingId,word,startTimestamp,endTimestamp,confidence) VALUES (NULL,1, 'test', NULL, NULL, 1)";
     $query = $conn->prepare($sql);
     try {

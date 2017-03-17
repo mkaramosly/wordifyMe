@@ -20,12 +20,12 @@ class Analyzer
 
     public function getTranscript($meetingId)
     {
-        $sql = "SELECT transcript FROM transcript t JOIN meeting m ON m.transcriptId = m.meetingId WHERE m.meetingId = $meetingId;";
+        $sql = "SELECT transcript FROM transcript t JOIN meeting m ON t.transcriptId = m.transcriptId WHERE m.meetingId = $meetingId;";
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
-
-            return $stmt->fetch(\PDO::FETCH_NUM);
+            $data = $stmt->fetch(\PDO::FETCH_NUM);
+            return $data;
         } catch (\PDOException $e) {
             error_log(print_r($e->getMessage(), true), 3, '/tmp/err.log');
             return false;

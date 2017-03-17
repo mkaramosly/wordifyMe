@@ -7,31 +7,29 @@ class JSONParserController {
 
   public $watsonResults;
   public $path = "../data";
-  public $servername = "localhost";
-  public $dbName = "hackathon";
+  public $servername = "mysql";
+  public $dbName = "wordifyme";
   public $username = 'root';
-  public $password = '';
+  public $password = 'test123';
   public $currentFolder;
 
   public function parseJSONFile($request, $args) {
-
     $id = $request->getAttribute('id');
 
     $files = scandir($this->path);
     $contents = NULL;
 
-    foreach ($files as $dir) {
-      if (preg_match('/(1)+_/', $dir)) {
-        $this->currentFolder = $dir;
-        $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response_file.json');
+      foreach ($files as $dir) {
+          if (preg_match('/(1)+_/', $dir)) {
+          $this->currentFolder = $dir;
+          $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response_file.json');
       }
     }
-
-    if (!$contents) {
-      return false;
+      if (!$contents) {
+        return false;
     }
 
-    $jsonObjects = $this->splitIntoJSONObjects($contents);
+      $jsonObjects = $this->splitIntoJSONObjects($contents);
     $this->watsonResults = new WatsonResults();
     $this->watsonResults->meetingId = $id;
 
@@ -86,9 +84,33 @@ class JSONParserController {
       $word->insertWord($this->watsonResults->meetingId, $conn);
     }
 
-    $file = '../data/'.$this->currentFolder . '/' . $this->watsonResults->meetingId;
+    $this->storeTranscript($conn);
+
+    $file = '../data/'.$this->currentFolder . '/' . $this->watsonResults->meetingId . '.analyze';
     file_put_contents($file, '');
 
+  }
+
+  public function storeTranscript($conn) {
+      $sql = "INSERT INTO wordifyme.transcript (transcript, confidence) VALUES (:transcript, :confidence) ";
+
+      $query = $conn->prepare($sql);
+      try {
+          $query->execute(array(':transcript'=> $this->watsonResults->transcript, ':confidence' => 1));
+          $id = $conn->lastInsertId();
+      } catch (\Exception $e) {
+          echo $e->getMessage();
+      }
+
+      $sql = "UPDATE meeting SET transcriptId = $id WHERE meetingId = ".$this->watsonResults->meetingId;
+      error_log($sql.PHP_EOL, 3, '/tmp/err.log');
+      try {
+        $query = $conn->prepare($sql);
+        $query->execute();
+
+      } catch (\Exception $e) {
+          echo $e->getMessage();
+      }
   }
 
 }

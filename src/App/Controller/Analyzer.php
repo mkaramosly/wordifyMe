@@ -22,6 +22,7 @@ class Analyzer
         $analyzerModel = new \App\Model\Analyzer();
 
         $transcript = $analyzerModel->getTranscript($args['id']);
+        error_log(print_r($transcript, true), 3, '/tmp/err.log');
         $body = [
             "text" => $transcript[0],
             "features" => [
@@ -37,7 +38,7 @@ class Analyzer
                 ]
             ]
         ];
-
+        error_log(print_r($body, true), 3, '/tmp/err.log');
         // Send a request to https://foo.com/api/test
         $response = $client->request(
             'POST',
