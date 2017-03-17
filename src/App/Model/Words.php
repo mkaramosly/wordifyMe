@@ -20,9 +20,12 @@ class Words
 
     public function getWords($meetingId)
     {
-        $sql = "SELECT FROM ";
+        $sql = "SELECT meetingWordId, word, startTimestamp FROM meeting_words WHERE meetingId = $meetingId ORDER BY startTimestamp;";
         try {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
 
+            return $stmt->fetchAll();
         } catch (\PDOException $e) {
             error_log(print_r($e->getMessage(), true), 3, '/tmp/err.log');
             return false;
