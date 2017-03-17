@@ -68,8 +68,7 @@ CREATE TABLE `keyword` (
   `keyword` varchar(255) COLLATE utf8_bin NOT NULL,
   `dictionaryId` int(10) NOT NULL DEFAULT '1',
   `counts` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`keywordId`),
-  CONSTRAINT `fk_dictionaryId` FOREIGN KEY (`keywordId`) REFERENCES `dictionary` (`dictionaryId`)
+  PRIMARY KEY (`keywordId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -92,9 +91,7 @@ CREATE TABLE `meeting` (
   `analyzed` enum('0','1','2') COLLATE utf8_bin NOT NULL DEFAULT '0',
   PRIMARY KEY (`meetingId`),
   KEY `fk_fileId` (`fileId`),
-  KEY `transcriptId` (`transcriptId`),
-  CONSTRAINT `fk_fileId` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`),
-  CONSTRAINT `meeting_ibfk_1` FOREIGN KEY (`transcriptId`) REFERENCES `transcript` (`transcriptId`)
+  KEY `transcriptId` (`transcriptId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -112,8 +109,7 @@ CREATE TABLE `meeting_words` (
   `endTimestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `confidence` float NOT NULL,
   PRIMARY KEY (`meetingWordId`),
-  KEY `fk_meetingId` (`meetingId`),
-  CONSTRAINT `fk_meetingId` FOREIGN KEY (`meetingId`) REFERENCES `meeting` (`meetingId`)
+  KEY `fk_meetingId` (`meetingId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -165,8 +161,7 @@ CREATE TABLE `word_alternative` (
   `meetingWordId` int(10) NOT NULL,
   `confidence` float NOT NULL,
   PRIMARY KEY (`wordAlternativeId`),
-  KEY `fk_meetingWordId` (`meetingWordId`),
-  CONSTRAINT `fk_meetingWordId` FOREIGN KEY (`meetingWordId`) REFERENCES `meeting_words` (`meetingWordId`)
+  KEY `fk_meetingWordId` (`meetingWordId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
