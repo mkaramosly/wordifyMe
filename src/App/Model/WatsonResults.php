@@ -1,7 +1,6 @@
 <?php
-namespace App\WatsonResults;
+namespace App\Model;
 
-use App\WatsonWord\WatsonWord;
 
 class WatsonResults
 {

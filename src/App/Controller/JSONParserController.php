@@ -1,21 +1,26 @@
 <?php
-namespace App\JSONParserController;
+namespace App\Controller;
 
-use App\WatsonResults\WatsonResults;
+use App\Model\WatsonResults;
 
 class JSONParserController {
 
   public $watsonResults;
-  public $path = "../../data";
+  public $path = "../data";
+  public $servername = "localhost";
+  public $username = 'root';
+  public $password = 'test123';
 
-  public function parseJSONFile($id) {
+  public function parseJSONFile($request, $args) {
+
+    $id = $request->getAttribute('id');
 
     $files = scandir($this->path);
     $contents = NULL;
 
     foreach ($files as $dir) {
-      if (preg_match('({$id})\_', $dir)) {
-        $contents = file_get_contents('{$this->path}/{$dir}/{$id}_response.json');
+      if (preg_match('/(1)+_/', $dir)) {
+        $contents = file_get_contents($this->path. '/' . $dir . '/' . $id . '_response.txt');
       }
     }
 
@@ -33,6 +38,8 @@ class JSONParserController {
         $this->watsonResults->parseFinal($jsonObject['results'][0]);
       }
     }
+
+    $this->writeToDB();
   }
 
   public function splitIntoJSONObjects($fileContents) {
@@ -60,6 +67,17 @@ class JSONParserController {
     }
 
     return $jsonObjects;
+  }
+
+  public function writeToDB() {
+    try {
+      $conn = new \PDO("mysql:host=$this->servername;dbname=wordifyme", $this->username, $this->password);
+      $conn->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+    } catch (\Exception $e) {
+    }
+
+
+
   }
 
 }
