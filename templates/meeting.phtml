@@ -27,7 +27,13 @@
                         <div class="card-block">
                             <h4 class="card-title">Meeting: TITLE HERE</h4>
                             <h6 class="card-subtitle mb-2 text-muted">Timestamps HERE</h6>
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <p class="card-text">
+                                <?php
+                                foreach ($words as $word) {
+                                    echo "<sup>".$word['startTimestamp']."</sup> ".$word['word']." ";
+                                }
+                                ?>
+                            </p>
                         </div>
                         <div class="card-footer text-muted">
                             Labels + Tags in here

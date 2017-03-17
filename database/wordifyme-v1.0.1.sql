@@ -105,8 +105,8 @@ CREATE TABLE `meeting_words` (
   `meetingWordId` int(10) NOT NULL AUTO_INCREMENT,
   `meetingId` int(10) NOT NULL,
   `word` varchar(100) COLLATE utf8_bin NOT NULL,
-  `startTimestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `endTimestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `startTimestamp` FLOAT,
+  `endTimestamp` FLOAT,
   `confidence` float NOT NULL,
   PRIMARY KEY (`meetingWordId`),
   KEY `fk_meetingId` (`meetingId`)
