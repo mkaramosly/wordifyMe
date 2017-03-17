@@ -26,3 +26,8 @@ $container['\App\Controller\Controller'] = function($c) {
     $settings = $c->get('settings')['renderer'];
     return new \App\Controller\Controller(new Slim\Views\PhpRenderer($settings['template_path']));
 };
+
+$container['\App\Controller\MeetingController'] = function($c) {
+    $settings = $c->get('settings')['renderer'];
+    return new \App\Controller\MeetingController(new Slim\Views\PhpRenderer($settings['template_path']));
+};
